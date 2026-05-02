@@ -88,6 +88,20 @@ El sistema utiliza un esquema de **Aislamiento Lógico**. Cada sentencia SQL eje
     ```
 
 ---
+### 🏎️ Ejecución Completa
+
+Para inciar todas las aplicaciones simultáneamente.
+
+```bash
+    pnpm turbo dev
+```
+1. **Ejecución por Componentes**
+
+    | Aplicación     | Comando de Arranque           | URL de Acceso        |
+    |----------------|------------------------------|----------------------|
+    | API (Backend)  | pnpm --filter api dev        | http://localhost:3000 |
+    | Panel Admin    | pnpm --filter admin dev      | http://localhost:3001 |
+    | Portal Web     | pnpm --filter web dev        | http://localhost:3002 |
 
 ## 📖 Documentación
 

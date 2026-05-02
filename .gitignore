@@ -1,0 +1,41 @@
+
+# dependencies
+
+node_modules
+
+.pnpm-debug.log
+
+
+
+# build outputs
+
+dist
+
+.next
+
+out
+
+build
+
+
+
+# IDEs
+
+.vscode
+
+.idea
+
+
+
+# Env files
+
+.env
+
+*.env.local
+
+
+
+# Turbo cache
+
+.turbo
+

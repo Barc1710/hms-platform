@@ -1,0 +1,40 @@
+services:
+  # Base de Datos Principal: PostgreSQL 16
+  postgres-db:
+    image: postgres:16-alpine
+    container_name: hms-postgres
+    restart: always
+    environment:
+      POSTGRES_USER: hms_admin
+      POSTGRES_PASSWORD: hms_secure_password_2026
+      POSTGRES_DB: omnihotel_db
+    ports:
+      # Puerto estándar para que DataGrip/VS Code se conecten desde Windows/WSL
+      - "5432:5432"
+    volumes:
+      # Persistencia de datos para no perder la información al apagar el contenedor
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - hms-network
+
+  # Motor de Caché y Sesiones: Redis 7
+  redis-cache:
+    image: redis:7-alpine
+    container_name: hms-redis
+    restart: always
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    networks:
+      - hms-network
+
+# Red interna para comunicación entre los servicios
+networks:
+  hms-network:
+    driver: bridge
+
+# Definición de volúmenes para almacenamiento persistente
+volumes:
+  postgres_data:
+  redis_data:

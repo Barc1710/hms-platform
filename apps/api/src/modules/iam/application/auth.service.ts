@@ -8,7 +8,7 @@ export class AuthService {
   constructor(
     @Inject('IUsuarioRepository')
     private readonly usuarioRepository: IUsuarioRepository,
-    private readonly jwtService: JwtService,
+    @Inject(JwtService) private readonly jwtService: JwtService,
   ) {}
 
   async login(email: string, password: string, hotelId: string) {

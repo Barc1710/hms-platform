@@ -9,6 +9,6 @@ export class DatabaseService implements OnModuleDestroy {
   async onModuleDestroy() {
     // Cerramos el pool de conexiones al apagar el servidor
     await sql.end();
-    console.log('🔌 Conexión a PostgreSQL cerrada limpiamente');
+    console.log(' Conexión a PostgreSQL cerrada limpiamente');
   }
 }

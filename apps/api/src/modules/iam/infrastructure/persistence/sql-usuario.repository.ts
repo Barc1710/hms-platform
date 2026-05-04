@@ -21,7 +21,7 @@ export class SqlUsuarioRepository implements IUsuarioRepository {
         rol, 
         hotel_id as "hotelId", 
         activo
-      FROM staff.usuarios 
+      FROM usuarios 
       WHERE email = ${email} 
         AND hotel_id = ${hotelId}
       LIMIT 1
@@ -41,7 +41,7 @@ export class SqlUsuarioRepository implements IUsuarioRepository {
 
   async guardar(usuario: Usuario): Promise<void> {
     await this.sql`
-      INSERT INTO staff.usuarios (
+      INSERT INTO usuarios (
         id, email, password_hash, rol, hotel_id, activo
       ) VALUES (
         ${usuario.id}, 

@@ -11,10 +11,10 @@ export class AuthService {
     @Inject(JwtService) private readonly jwtService: JwtService,
   ) {}
 
-  async login(email: string, password: string, hotelId: string) {
+  async login(email: string, password: string, tenantSlug: string) {
     const usuario = await this.usuarioRepository.buscarPorEmailYHotel(
       email,
-      hotelId,
+      tenantSlug,
     );
 
     if (!usuario) {

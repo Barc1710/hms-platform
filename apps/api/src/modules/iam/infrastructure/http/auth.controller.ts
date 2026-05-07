@@ -7,13 +7,11 @@ import {
   Inject,
 } from '@nestjs/common';
 import { AuthService } from '../../application/auth.service';
-import { LoginDto } from './login.dto';
+import { LoginDto } from '../dto/login.dto';
 
 @Controller('auth')
 export class AuthController {
-  constructor(@Inject(AuthService) private readonly authService: AuthService) {
-    console.log('¿Servicio inyectado?:', this.authService);
-  }
+  constructor(@Inject(AuthService) private readonly authService: AuthService) {}
 
   @Post('login')
   @HttpCode(HttpStatus.OK)
@@ -21,7 +19,7 @@ export class AuthController {
     return this.authService.login(
       loginDto.email,
       loginDto.password,
-      loginDto.hotelId,
+      loginDto.tenant,
     );
   }
 }

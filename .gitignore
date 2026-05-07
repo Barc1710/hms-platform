@@ -39,3 +39,5 @@ build
 
 .turbo
 
+
+*.github

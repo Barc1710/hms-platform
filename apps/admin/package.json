@@ -9,20 +9,27 @@
     "lint": "eslint"
   },
   "dependencies": {
+    "@hms/ui": "workspace:*",
+    "@hookform/resolvers": "^5.2.2",
+    "js-cookie": "^3.0.5",
+    "lucide-react": "^1.14.0",
     "next": "16.2.4",
     "react": "19.2.4",
     "react-dom": "19.2.4",
-    "@hms/ui": "workspace:*"
+    "react-hook-form": "^7.75.0",
+    "sonner": "^2.0.7",
+    "zod": "^4.4.3"
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4",
+    "@types/js-cookie": "^3.0.6",
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",
     "eslint": "^9",
     "eslint-config-next": "16.2.4",
-    "tailwindcss-animate": "latest",
     "tailwindcss": "^4",
+    "tailwindcss-animate": "latest",
     "typescript": "^5"
   }
 }

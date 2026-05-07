@@ -8,6 +8,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
 import { toast } from "sonner";
 import { Button, Input, Label, Checkbox, Separator } from "@hms/ui";
+import Link from "next/link";
 import {
   Hotel,
   ShieldCheck,
@@ -164,12 +165,12 @@ export default function LoginPage() {
                   >
                     Contraseña
                   </Label>
-                  <button
-                    type="button"
+                  <Link
+                    href="/forgot-password"
                     className="text-[12px] font-bold text-zinc-600 cursor-pointer text-primary hover:underline"
                   >
                     ¿Olvidaste tu clave?
-                  </button>
+                  </Link>
                 </div>
                 <div className="relative">
                   <Input

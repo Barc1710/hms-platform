@@ -21,10 +21,12 @@ export class AuthService {
       throw new UnauthorizedException('Credenciales inválidas para este hotel');
     }
 
+    // Ahora 'usuario.passwordHash' ya no será undefined
     const isPasswordValid = await bcrypt.compare(
       password,
       usuario.passwordHash,
     );
+
     if (!isPasswordValid) {
       throw new UnauthorizedException('Credenciales inválidas');
     }

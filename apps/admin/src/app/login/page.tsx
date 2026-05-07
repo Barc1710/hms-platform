@@ -18,7 +18,6 @@ import {
   KeyRound,
 } from "lucide-react";
 import { useTenant } from "@/hooks/use-tenant";
-import Home from "../page";
 
 // Esquema de validación estricto
 const loginSchema = z.object({

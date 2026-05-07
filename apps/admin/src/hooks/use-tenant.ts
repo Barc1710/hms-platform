@@ -1,12 +1,13 @@
 "use client";
-
-import { useMemo } from "react";
-
 export const useTenant = () => {
-  return useMemo(() => {
-    if (typeof window === "undefined") return "default";
-    const hostname = window.location.hostname;
-    const slug = hostname.split('.')[0];
-    return slug || "hotel-paraiso";
-  }, []);
+  if (typeof window === "undefined") return "default";
+
+  const hostname = window.location.hostname;
+
+  // Si estamos en localhost, devolvemos el slug que insertamos en el SEED SQL
+  if (hostname === "localhost" || hostname === "127.0.0.1") {
+    return "hotel-paraiso"; 
+  }
+
+  return hostname.split('.')[0];
 };

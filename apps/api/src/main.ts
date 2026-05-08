@@ -10,7 +10,6 @@ async function bootstrap() {
   console.log(`🚀 API HMS corriendo en: http://localhost:${port}`);
 }
 
-// Corregimos el error de ESLint manejando la promesa:
 bootstrap().catch((err: unknown) => {
   console.error('❌ Error crítico al iniciar la aplicación:', err);
   process.exit(1);

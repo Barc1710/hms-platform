@@ -1,4 +1,5 @@
 import { TenantProvider } from "@/components/providers/tenant-provider";
+import { Toaster } from 'sonner';
 import { getHotelBranding } from "@/lib/api-tenant";
 import { getSlugFromHeaders } from "@/lib/tenant-utils"; // Importar utilidad
 import "./globals.css";
@@ -14,12 +15,9 @@ export default async function RootLayout({ children }: { children: React.ReactNo
     <html lang="es">
       <body className="antialiased">
         {hotelData ? (
-          <TenantProvider branding={hotelData.branding}>
-             {/* Un pequeño badge para confirmar que es dinámico */}
-             <div className="fixed bottom-4 right-4 bg-black/80 text-white text-[10px] px-2 py-1 rounded-full z-50">
-               Modo Multi-tenant: {hotelData.nombre} ({slug})
-             </div>
+          <TenantProvider data={hotelData}>
              {children}
+            <Toaster position="bottom-right" />
           </TenantProvider>
         ) : (
           <div className="h-screen w-full flex flex-col items-center justify-center bg-zinc-950 text-white p-10 text-center">

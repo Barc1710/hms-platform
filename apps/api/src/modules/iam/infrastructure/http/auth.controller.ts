@@ -7,6 +7,7 @@ import {
   Inject,
   UseInterceptors,
   Req,
+  UnauthorizedException,
 } from '@nestjs/common';
 import { Request } from 'express';
 import { AuthService } from '../../application/auth.service';
@@ -24,10 +25,14 @@ export class AuthController {
   @HttpCode(HttpStatus.OK)
   async login(
     @Body() body: LoginDto,
-    @Req() request: Request & { tenant: { id: string } },
+    @Req() request: Request & { tenant?: { id?: string } },
   ) {
     // El interceptor ya puso el objeto 'tenant' en el request
-    const hotelId = request.tenant.id;
+    const hotelId = request.tenant?.id;
+
+    if (!hotelId) {
+      throw new UnauthorizedException('Tenant no resuelto para el login');
+    }
 
     return this.authService.login(body.email, body.password, hotelId);
   }
@@ -35,12 +40,21 @@ export class AuthController {
   @Post('forgot-password')
   @UseInterceptors(TenantInterceptor)
   @HttpCode(HttpStatus.OK)
-  async forgotPassword(@Body() body: ForgotPasswordDto) {
-    return this.authService.forgotPassword(body.email, body.tenant);
+  async forgotPassword(
+    @Body() body: ForgotPasswordDto,
+    @Req() request: Request & { tenant?: { id?: string } },
+  ) {
+    const hotelId = request.tenant?.id;
+
+    if (!hotelId) {
+      throw new UnauthorizedException('Tenant no resuelto para la recuperación');
+    }
+
+    const tenantSlug = request.tenant?.slug;
+    return this.authService.forgotPassword(body.email, hotelId, tenantSlug ?? hotelId);
   }
 
   @Post('reset-password')
-  @UseInterceptors(TenantInterceptor)
   @HttpCode(HttpStatus.OK)
   async resetPassword(@Body() body: ResetPasswordDto) {
     return this.authService.resetPassword(body.token, body.password);

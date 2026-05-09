@@ -1,44 +1,61 @@
-"use client";
+'use client';
 
-import { useEffect } from "react";
-import type { ReactNode } from "react";
-import { hexToHslComponents } from "@/lib/utils-colors";
+import React, { createContext, useContext, useEffect } from 'react';
+import { hexToHslComponents } from '@/lib/utils-colors';
 
 interface Branding {
-  color_primario?: string;
-  color_secundario?: string;
-  url_logo?: string;
+  color_primario: string;
+  color_secundario: string;
+  url_logo: string;
 }
 
-interface TenantProviderProps {
+interface TenantData {
+  nombre?: string | null;
+  slug?: string | null;
   branding?: Branding | null;
-  children: ReactNode;
 }
 
-export function TenantProvider({
-  branding,
-  children,
-}: TenantProviderProps) {
+interface TenantContextProps {
+  branding: Branding | null;
+  hotelName: string;
+  slug: string;
+}
+
+const TenantContext = createContext<TenantContextProps | undefined>(undefined);
+
+export function TenantProvider({ 
+  data, 
+  children 
+}: { 
+  data: TenantData | null;
+  children: React.ReactNode 
+}) {
   useEffect(() => {
-    if (!branding?.color_primario) {
-      return;
+    if (data?.branding?.color_primario) {
+      const root = document.documentElement;
+      const primaryHsl = hexToHslComponents(data.branding.color_primario);
+      const secondaryHsl = hexToHslComponents(data.branding.color_secundario || data.branding.color_primario);
+
+      root.style.setProperty('--primary', primaryHsl);
+      root.style.setProperty('--secondary', secondaryHsl);
+      root.style.setProperty('--primary-foreground', '0 0% 100%');
     }
+  }, [data]);
 
-    const root = document.documentElement;
-
-    try {
-      // Convert to: "222 47% 11%"
-      const primaryHsl = hexToHslComponents(branding.color_primario);
-      const secondaryHsl = hexToHslComponents(
-        branding.color_secundario || branding.color_primario,
-      );
-
-      root.style.setProperty("--primary", primaryHsl);
-      root.style.setProperty("--secondary", secondaryHsl);
-    } catch {
-      // Ignore invalid branding colors and keep current theme variables.
-    }
-  }, [branding]);
-
-  return <>{children}</>;
+  return (
+    <TenantContext.Provider value={{ 
+      branding: data?.branding ?? null, 
+      hotelName: data?.nombre || 'HMS',
+      slug: data?.slug || 'default'
+    }}>
+      {children}
+    </TenantContext.Provider>
+  );
 }
+
+// Hook para usar el branding en cualquier parte
+export const useBranding = () => {
+  const context = useContext(TenantContext);
+  if (!context) throw new Error("useBranding debe usarse dentro de un TenantProvider");
+  return context;
+};

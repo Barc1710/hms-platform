@@ -1,18 +1,15 @@
-import { Button } from "@hms/ui"; // Componente real de Shadcn
+import { redirect } from "next/navigation";
+import { cookies } from "next/headers";
 
-export default function Home() {
-  return (
-    <div className="p-20 flex flex-col items-center gap-6">
-      <h1 className="text-3xl font-bold">Panel Administrativo</h1>
-      
-      {/* Este botón de Shadcn será del color del hotel automáticamente */}
-      <Button size="lg">
-        Botón de Shadcn Dinámico
-      </Button>
+export default async function RootPage() {
+  const cookieStore = await cookies();
+  const session = cookieStore.get("hms_session");
 
-      <div className="p-4 bg-secondary text-secondary-foreground rounded-md">
-        Este recuadro usa el color secundario del hotel
-      </div>
-    </div>
-  );
+  // Si no hay sesión, mandamos al login del hotel
+  if (!session) {
+    redirect("/login");
+  }
+
+  // Si hay sesión, mandamos directo al panel
+  redirect("/dashboard");
 }

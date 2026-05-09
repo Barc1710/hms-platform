@@ -15,7 +15,7 @@
     --popover-foreground: 224 71% 4%;
 
     /* Colores de marca y acciones */
-    --primary: 220 70% 50%; /* Un azul más vibrante y profesional */
+    --primary: 220 70% 50%; /* Tu azul vibrante y profesional */
     --primary-foreground: 210 20% 98%;
 
     --secondary: 220 14% 96%;
@@ -37,7 +37,24 @@
     --ring: 224 71% 4%;
 
     /* Geometría */
-    --radius: 0.5rem; /* 3rem era excesivo para un estándar; 0.5rem es más balanceado */
+    --radius: 0.5rem;
+
+    /* --- SIDEBAR VARIABLES (NUEVO) --- */
+    --sidebar-background: 0 0% 98%;
+    --sidebar-foreground: 240 5.3% 26.1%;
+    --sidebar-primary: var(--primary);
+    --sidebar-primary-foreground: var(--primary-foreground);
+    --sidebar-accent: var(--accent);
+    --sidebar-accent-foreground: var(--accent-foreground);
+    --sidebar-border: var(--border);
+    --sidebar-ring: var(--primary);
+
+    /* --- CHART VARIABLES (PARA GRÁFICOS) --- */
+    --chart-1: 220 70% 50%;
+    --chart-2: 173 58% 39%;
+    --chart-3: 197 37% 24%;
+    --chart-4: 43 74% 66%;
+    --chart-5: 27 87% 67%;
   }
 
   .dark {
@@ -68,5 +85,31 @@
     --border: 217 19% 27%;
     --input: 217 19% 27%;
     --ring: 212 26% 83%;
+
+    /* --- SIDEBAR DARK MODE (NUEVO) --- */
+    --sidebar-background: 240 5.9% 10%;
+    --sidebar-foreground: 240 4.8% 95.9%;
+    --sidebar-primary: var(--primary);
+    --sidebar-primary-foreground: var(--primary-foreground);
+    --sidebar-accent: var(--accent);
+    --sidebar-accent-foreground: var(--accent-foreground);
+    --sidebar-border: var(--border);
+    --sidebar-ring: var(--primary);
+
+    /* --- CHART DARK MODE --- */
+    --chart-1: 220 70% 50%;
+    --chart-2: 160 60% 45%;
+    --chart-3: 30 80% 55%;
+    --chart-4: 280 65% 60%;
+    --chart-5: 340 75% 55%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  body {
+    @apply bg-background text-foreground;
   }
 }

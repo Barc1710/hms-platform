@@ -42,10 +42,10 @@ export class AuthService {
     @Inject(JwtService) private readonly jwtService: JwtService,
   ) {}
 
-  async login(email: string, password: string, tenantSlug: string) {
+  async login(email: string, password: string, hotelId: string) {
     const usuario = await this.usuarioRepository.buscarPorEmailYHotel(
       email,
-      tenantSlug,
+      hotelId,
     );
 
     if (!usuario) {
@@ -57,11 +57,9 @@ export class AuthService {
       password,
       usuario.passwordHash,
     );
-
     if (!isPasswordValid) {
-      throw new UnauthorizedException('Credenciales inválidas');
+      throw new UnauthorizedException('Contraseña incorrecta');
     }
-
     const payload = {
       sub: usuario.id,
       email: usuario.email,
@@ -79,10 +77,10 @@ export class AuthService {
     };
   }
 
-  async forgotPassword(email: string, tenantSlug: string) {
+  async forgotPassword(email: string, hotelId: string) {
     const usuario = await this.usuarioRepository.buscarPorEmailYHotel(
       email,
-      tenantSlug,
+      hotelId,
     );
 
     if (!usuario) {

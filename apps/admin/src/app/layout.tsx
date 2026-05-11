@@ -14,18 +14,10 @@ export default async function RootLayout({ children }: { children: React.ReactNo
   return (
     <html lang="es">
       <body className="antialiased">
-        {hotelData ? (
-          <TenantProvider data={hotelData}>
-             {children}
-            <Toaster position="bottom-right" />
-          </TenantProvider>
-        ) : (
-          <div className="h-screen w-full flex flex-col items-center justify-center bg-zinc-950 text-white p-10 text-center">
-            <h1 className="text-2xl font-bold text-red-500 mb-2">Acceso no autorizado</h1>
-            <p className="text-zinc-400">No hemos podido identificar el hotel basado en la URL: <strong>{slug || 'desconocida'}</strong></p>
-            <p className="mt-4 text-xs text-zinc-600">Asegúrate de entrar vía [hotel-slug].localhost:3001</p>
-          </div>
-        )}
+        <TenantProvider data={hotelData}>
+          {children}
+          <Toaster position="bottom-right" />
+        </TenantProvider>
       </body>
     </html>
   );

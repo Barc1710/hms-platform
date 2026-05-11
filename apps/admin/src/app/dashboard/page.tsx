@@ -27,7 +27,7 @@ export default function DashboardPage() {
     <div className="space-y-8">
       {/* Título de Bienvenida */}
       <div>
-        <h1 className="text-3xl font-black tracking-tighter">
+        <h1 className="text-3xl font-black tracking-tighter text-primary">
           Resumen de Operaciones
         </h1>
         <p className="text-primary/60 font-medium">

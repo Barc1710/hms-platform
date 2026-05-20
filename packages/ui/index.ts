@@ -6,3 +6,12 @@ export * from "./src/components/ui/form"
 export * from "./src/components/ui/separator"
 export * from "./src/components/ui/sonner"
 export * from "./src/components/ui/checkbox"
+export * from "./src/components/ui/sidebar";
+export * from "./src/components/ui/dropdown-menu";
+export * from "./src/components/ui/breadcrumb";
+export * from "./src/components/ui/avatar";
+export * from "./src/components/ui/tooltip";
+export * from "./src/components/ui/sheet";
+export * from "./src/components/ui/skeleton";
+export * from "./src/lib/utils";
+export * from "./src/components/ui/collapsible";

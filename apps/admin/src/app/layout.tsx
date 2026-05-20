@@ -1,23 +1,23 @@
 import { TenantProvider } from "@/components/providers/tenant-provider";
+import { Toaster } from 'sonner';
 import { getHotelBranding } from "@/lib/api-tenant";
+import { getSlugFromHeaders } from "@/lib/tenant-utils"; // Importar utilidad
 import "./globals.css";
 
 export default async function RootLayout({ children }: { children: React.ReactNode }) {
-  // Obtenemos los datos del API
-  const hotelData = await getHotelBranding('hotel-paraiso');
+  // 1. Detectamos el slug automáticamente desde la URL
+  const slug = await getSlugFromHeaders();
+  
+  // 2. Buscamos los datos en el Backend usando ese slug
+  const hotelData = slug ? await getHotelBranding(slug) : null;
 
   return (
     <html lang="es">
       <body className="antialiased">
-        {hotelData ? (
-          <TenantProvider branding={hotelData.branding}>
-            {children}
-          </TenantProvider>
-        ) : (
-          <div className="h-screen flex items-center justify-center">
-            Conectando con el motor multi-tenant...
-          </div>
-        )}
+        <TenantProvider data={hotelData}>
+          {children}
+          <Toaster position="bottom-right" />
+        </TenantProvider>
       </body>
     </html>
   );

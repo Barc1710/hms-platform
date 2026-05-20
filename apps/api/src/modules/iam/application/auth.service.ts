@@ -3,6 +3,7 @@ import {
   Inject,
   UnauthorizedException,
   BadRequestException,
+  NotFoundException,
 } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcrypt';
@@ -11,7 +12,7 @@ import * as crypto from 'crypto';
 type UsuarioRepository = {
   buscarPorEmailYHotel(
     email: string,
-    hotelSlug: string,
+    hotelId: string,
   ): Promise<{
     id: string;
     email: string;
@@ -42,10 +43,14 @@ export class AuthService {
     @Inject(JwtService) private readonly jwtService: JwtService,
   ) {}
 
-  async login(email: string, password: string, tenantSlug: string) {
+  async login(email: string, password: string, hotelId: string) {
+    if (!email?.trim() || !password?.trim() || !hotelId?.trim()) {
+      throw new BadRequestException('Faltan credenciales o tenant para iniciar sesión');
+    }
+
     const usuario = await this.usuarioRepository.buscarPorEmailYHotel(
       email,
-      tenantSlug,
+      hotelId,
     );
 
     if (!usuario) {
@@ -57,11 +62,9 @@ export class AuthService {
       password,
       usuario.passwordHash,
     );
-
     if (!isPasswordValid) {
-      throw new UnauthorizedException('Credenciales inválidas');
+      throw new UnauthorizedException('Contraseña incorrecta');
     }
-
     const payload = {
       sub: usuario.id,
       email: usuario.email,
@@ -79,15 +82,19 @@ export class AuthService {
     };
   }
 
-  async forgotPassword(email: string, tenantSlug: string) {
+  async forgotPassword(email: string, hotelId: string, tenantSlug?: string) {
+    if (!email?.trim() || !hotelId?.trim()) {
+      throw new BadRequestException('Faltan datos de correo o tenant para recuperar la contraseña');
+    }
+
     const usuario = await this.usuarioRepository.buscarPorEmailYHotel(
       email,
-      tenantSlug,
+      hotelId,
     );
 
     if (!usuario) {
-      // Por seguridad, no decimos si el email existe o no
-      return { message: 'Si el correo existe, recibirás instrucciones.' };
+      // Now we explicitly signal the user is not found within that hotel
+      throw new NotFoundException('El correo electrónico no está registrado en este hotel');
     }
 
     // 1. Generar token aleatorio de 64 caracteres
@@ -95,27 +102,33 @@ export class AuthService {
     const expires = new Date();
     expires.setHours(expires.getHours() + 1); // Expira en 1 hora
 
-    // 2. Guardar en DB
+    // 2. Guardar en DB (column names must match DB: recovery_token, recovery_token_expires)
     await this.usuarioRepository.actualizarTokenRecuperacion(
       usuario.id,
       token,
       expires,
     );
 
-    // 3. --- EL SIMULADOR DE EMAIL ---
-    const resetLink = `http://localhost:3001/reset-password?token=${token}`;
+    // 3. Generar link dinámico local usando tenantSlug si está disponible
+    const host = tenantSlug ? `${tenantSlug}.localhost:3001` : 'localhost:3001';
+    const resetLink = `http://${host}/reset-password?token=${token}`;
 
+    // Simulador de email
     console.log('\n--- 📧 SIMULADOR DE EMAIL HMS ---');
     console.log(`PARA: ${email}`);
     console.log('ASUNTO: Recuperación de Contraseña');
     console.log('MENSAJE: Haz clic aquí para cambiar tu clave:');
-    console.log(resetLink); // <--- ESTE ES EL QUE COPIARÁS
+    console.log(resetLink);
     console.log('----------------------------------\n');
 
-    return { message: 'Instrucciones enviadas al correo.' };
+    return { message: 'Se está enviando al correo el enlace para restablecer la contraseña.' };
   }
 
   async resetPassword(token: string, nuevaClave: string) {
+    if (!token?.trim() || !nuevaClave?.trim()) {
+      throw new BadRequestException('Faltan datos para restablecer la contraseña');
+    }
+
     const usuario = await this.usuarioRepository.buscarPorToken(token);
 
     if (!usuario || new Date() > usuario.tokenExpires) {
@@ -132,6 +145,6 @@ export class AuthService {
       hashed,
     );
 
-    return { success: true };
+    return { message: 'Contraseña actualizada correctamente' };
   }
 }

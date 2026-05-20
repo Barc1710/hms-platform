@@ -27,11 +27,10 @@ export class SqlUsuarioRepository implements IUsuarioRepository {
 
   async buscarPorEmailYHotel(
     email: string,
-    hotelSlug: string,
+    hotelId: string,
   ): Promise<Usuario | null> {
-    console.log(`Intentando login: ${email} para el hotel: ${hotelSlug}`);
+    console.log(`Intentando login: ${email} para el hotel: ${hotelId}`);
 
-    // EL FIX: Nombramos las columnas y les ponemos alias que coincidan con tu Entity
     const [usuario] = await this.sql<UsuarioRow[]>`
     SELECT 
       u.id, 
@@ -41,9 +40,8 @@ export class SqlUsuarioRepository implements IUsuarioRepository {
       u.hotel_id as "hotelId",           -- Convertimos snake_case a camelCase
       u.activo 
     FROM usuarios u
-    JOIN hoteles h ON u.hotel_id = h.id
-    WHERE u.email = ${email} 
-        AND h.slug = ${hotelSlug}
+    WHERE u.email = ${email}
+      AND u.hotel_id = ${hotelId}
       AND u.activo = true
   `;
 

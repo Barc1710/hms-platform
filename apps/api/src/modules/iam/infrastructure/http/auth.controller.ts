@@ -36,7 +36,12 @@ export class AuthController {
       throw new UnauthorizedException('Tenant no resuelto para el login');
     }
 
-    return this.authService.login(body.email, body.password, hotelId);
+    return this.authService.login(
+      body.email,
+      body.password,
+      hotelId,
+      request.tenant?.slug,
+    );
   }
 
   @Post('forgot-password')

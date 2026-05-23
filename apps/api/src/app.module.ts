@@ -3,6 +3,7 @@ import { ConfigModule } from '@nestjs/config';
 import { DatabaseModule } from './infrastructure/database/database.module';
 import { IamModule } from './modules/iam/iam.module';
 import { TenantModule } from './modules/tenant/tenant.module';
+import { RoomsModule } from './modules/rooms/rooms.module';
 
 @Module({
   imports: [
@@ -10,6 +11,7 @@ import { TenantModule } from './modules/tenant/tenant.module';
     DatabaseModule,
     IamModule,
     TenantModule,
+    RoomsModule,
   ],
   controllers: [],
   providers: [],

@@ -18,7 +18,7 @@ export class AuthService {
     @Inject(JwtService) private readonly jwtService: JwtService,
   ) {}
 
-  async login(email: string, password: string, hotelId: string) {
+  async login(email: string, password: string, hotelId: string, tenantSlug?: string) {
     if (!email?.trim() || !password?.trim() || !hotelId?.trim()) {
       throw new BadRequestException('Faltan credenciales o tenant para iniciar sesión');
     }
@@ -45,6 +45,7 @@ export class AuthService {
       email: usuario.email,
       hotelId: usuario.hotelId,
       rol: usuario.rol,
+      slug: tenantSlug,
     };
 
     return {

@@ -1,7 +1,7 @@
 import { Controller, Get, Req, UseInterceptors } from '@nestjs/common';
 import { Request } from 'express';
-import { HotelIdentity } from '../../../tenant/domain/hotel.repository';
-import { TenantInterceptor } from '../../../../common/interceptors/tenant.interceptor';
+import { HotelIdentity } from '@/modules/tenant/domain/hotel.repository';
+import { TenantInterceptor } from '@/common/interceptors/tenant.interceptor';
 
 type TenantRequest = Request & {
   tenant?: HotelIdentity;

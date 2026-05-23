@@ -16,6 +16,9 @@ import postgres from 'postgres';
           max: 10,
           idle_timeout: 20,
           onnotice: () => {},
+          transform: {
+            ...postgres.camel,
+          },
         });
         return sql;
       },

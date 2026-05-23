@@ -73,6 +73,8 @@ CREATE TABLE usuarios (
     nombre_completo VARCHAR(150) NOT NULL,
     rol             rol_usuario DEFAULT 'RECEPCIONISTA',
     activo          BOOLEAN DEFAULT TRUE,
+    recovery_token  TEXT,
+    recovery_token_expires TIMESTAMPTZ,
     creado_at       TIMESTAMPTZ DEFAULT NOW(),
     CONSTRAINT uq_usuario_email_hotel UNIQUE(hotel_id, email)
 );

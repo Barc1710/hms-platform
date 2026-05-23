@@ -5,11 +5,11 @@ import { HotelRepository, HotelIdentity } from '../../domain/hotel.repository';
 // Este tipo debe coincidir con lo que devuelve el SELECT para que TS no falle
 type HotelRow = {
   id: string;
-  nombre_comercial: string;
+  nombreComercial: string;
   slug: string;
-  color_primario: string;
-  color_secundario: string;
-  url_logo: string;
+  colorPrimario: string;
+  colorSecundario: string;
+  urlLogo: string;
 };
 
 @Injectable()
@@ -39,12 +39,12 @@ export class SqlHotelRepository implements HotelRepository {
     // Aquí mapeamos los nombres de la base de datos a tu Interfaz de Dominio
     return {
       id: hotel.id,
-      nombre: hotel.nombre_comercial, // h.nombre_comercial -> nombre
-      slug: hotel.slug, // h.slug -> slug
+      nombre: hotel.nombreComercial, // h.nombre_comercial -> nombreComercial -> nombre
+      slug: hotel.slug,
       branding: {
-        color_primario: hotel.color_primario,
-        color_secundario: hotel.color_secundario,
-        url_logo: hotel.url_logo,
+        color_primario: hotel.colorPrimario,
+        color_secundario: hotel.colorSecundario,
+        url_logo: hotel.urlLogo,
       },
     };
   }

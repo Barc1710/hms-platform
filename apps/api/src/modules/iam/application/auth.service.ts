@@ -8,38 +8,13 @@ import {
 import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcrypt';
 import * as crypto from 'crypto';
-
-type UsuarioRepository = {
-  buscarPorEmailYHotel(
-    email: string,
-    hotelId: string,
-  ): Promise<{
-    id: string;
-    email: string;
-    passwordHash: string;
-    rol: 'ADMIN_HOTEL' | 'RECEPCIONISTA' | 'LIMPIEZA';
-    hotelId: string;
-    activo: boolean;
-  } | null>;
-  actualizarTokenRecuperacion(
-    userId: string,
-    token: string | null,
-    expires: Date | null,
-  ): Promise<void>;
-  buscarPorToken(
-    token: string,
-  ): Promise<{ id: string; tokenExpires: Date } | null>;
-  actualizarPasswordYLimpiarToken(
-    userId: string,
-    hashedPassword: string,
-  ): Promise<void>;
-};
+import type { IUsuarioRepository } from '../domain/usuario.repository';
 
 @Injectable()
 export class AuthService {
   constructor(
     @Inject('IUsuarioRepository')
-    private readonly usuarioRepository: UsuarioRepository,
+    private readonly usuarioRepository: IUsuarioRepository,
     @Inject(JwtService) private readonly jwtService: JwtService,
   ) {}
 

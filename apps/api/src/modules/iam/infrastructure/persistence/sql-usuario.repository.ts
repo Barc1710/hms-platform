@@ -7,14 +7,15 @@ type UsuarioRow = {
   id: string;
   email: string;
   passwordHash: string;
-  rol: 'ADMIN_HOTEL' | 'RECEPCIONISTA' | 'LIMPIEZA';
+  rol: 'SUPER_ADMIN' | 'ADMIN_HOTEL' | 'RECEPCIONISTA' | 'HOUSEKEEPING' | 'MANTENIMIENTO';
   hotelId: string;
+  nombreCompleto: string;
   activo: boolean;
 };
 
 type RecuperacionRow = {
   id: string;
-  tokenExpires: Date;
+  recoveryTokenExpires: Date;
 };
 
 @Injectable()
@@ -32,18 +33,19 @@ export class SqlUsuarioRepository implements IUsuarioRepository {
     console.log(`Intentando login: ${email} para el hotel: ${hotelId}`);
 
     const [usuario] = await this.sql<UsuarioRow[]>`
-    SELECT 
-      u.id, 
-      u.email, 
-      u.password_hash as "passwordHash", -- Convertimos snake_case a camelCase
-      u.rol, 
-      u.hotel_id as "hotelId",           -- Convertimos snake_case a camelCase
-      u.activo 
-    FROM usuarios u
-    WHERE u.email = ${email}
-      AND u.hotel_id = ${hotelId}
-      AND u.activo = true
-  `;
+      SELECT 
+        id, 
+        email, 
+        password_hash, 
+        rol, 
+        hotel_id, 
+        nombre_completo,
+        activo 
+      FROM usuarios
+      WHERE email = ${email}
+        AND hotel_id = ${hotelId}
+        AND activo = true
+    `;
 
     if (!usuario) {
       return null;
@@ -55,6 +57,7 @@ export class SqlUsuarioRepository implements IUsuarioRepository {
       usuario.passwordHash,
       usuario.rol,
       usuario.hotelId,
+      usuario.nombreCompleto,
       usuario.activo,
     );
   }
@@ -62,13 +65,14 @@ export class SqlUsuarioRepository implements IUsuarioRepository {
   async guardar(usuario: Usuario): Promise<void> {
     await this.sql`
       INSERT INTO usuarios (
-        id, email, password_hash, rol, hotel_id, activo
+        id, email, password_hash, rol, hotel_id, nombre_completo, activo
       ) VALUES (
         ${usuario.id}, 
         ${usuario.email}, 
         ${usuario.passwordHash}, 
         ${usuario.rol}, 
         ${usuario.hotelId}, 
+        ${usuario.nombreCompleto},
         ${usuario.activo}
       )
     `;
@@ -80,29 +84,32 @@ export class SqlUsuarioRepository implements IUsuarioRepository {
     expires: Date | null,
   ): Promise<void> {
     await this.sql`
-    UPDATE usuarios 
-    SET recovery_token = ${token}, 
-        recovery_token_expires = ${expires}
-    WHERE id = ${userId}
-  `;
+      UPDATE usuarios 
+      SET recovery_token = ${token}, 
+          recovery_token_expires = ${expires}
+      WHERE id = ${userId}
+    `;
   }
 
   async buscarPorToken(
     token: string,
   ): Promise<{ id: string; tokenExpires: Date } | null> {
     const [usuario] = await this.sql<RecuperacionRow[]>`
-    SELECT 
-      id,
-      recovery_token_expires as "tokenExpires"
-    FROM usuarios 
-    WHERE recovery_token = ${token} AND activo = true
-  `;
+      SELECT 
+        id,
+        recovery_token_expires
+      FROM usuarios 
+      WHERE recovery_token = ${token} AND activo = true
+    `;
 
     if (!usuario) {
       return null;
     }
 
-    return usuario;
+    return {
+      id: usuario.id,
+      tokenExpires: usuario.recoveryTokenExpires,
+    };
   }
 
   async actualizarPasswordYLimpiarToken(

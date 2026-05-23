@@ -36,7 +36,7 @@ export function DashboardNavbar() {
   return (
     <header className="h-24 pt-3 px-0 pr-2 shrink-0">
       {/* Contenedor con Color Secundario y Bordes Redondeados a 1.5rem */}
-      <div className="h-full bg-secondary rounded-[0.75rem] flex items-center justify-between px-8 shadow-2xl shadow-primary/5 border border-primary/5">
+      <div className="h-full bg-secondary/95 rounded-xl flex items-center justify-between px-8 shadow-2xl shadow-primary/10 border border-primary/10">
         {/* IZQUIERDA: Ubicación */}
         <div className="flex flex-col">
           <Breadcrumb>
@@ -55,9 +55,9 @@ export function DashboardNavbar() {
           <Search className="absolute left-4 top-1/2 -translate-y-1/2 size-4 text-primary/40" />
           <Input
             placeholder="Buscar en el sistema..."
-            className="w-full bg-white/60 border border-primary/40 pl-11 h-10 rounded-xl shadow-sm transition-all placeholder:text-primary/30 text-xs 
+            className="w-full bg-secondary border border-primary/30 pl-11 h-10 rounded-xl shadow-sm transition-all placeholder:text-primary/30 text-xs 
              text-primary 
-             focus:bg-white 
+             focus:bg-secondary 
              focus:border-primary 
              focus-visible:border-primary 
              focus-visible:ring-1 
@@ -72,7 +72,7 @@ export function DashboardNavbar() {
           <Button
             variant="ghost"
             size="icon"
-            className="size-10 rounded-xl bg-white/40 border border-primary/40 hover:bg-white transition-all text-primary/60 cursor-pointer flex items-center justify-center"
+            className="size-10 rounded-xl bg-secondary/80 border border-primary/30 hover:bg-primary hover:text-secondary focus:bg-primary focus:text-secondary transition-all text-primary/60 cursor-pointer flex items-center justify-center"
           >
             <Bell className="size-4" />
           </Button>
@@ -81,39 +81,39 @@ export function DashboardNavbar() {
             <DropdownMenuTrigger asChild>
               <Button
                 variant="ghost"
-                className="h-12 gap-3 px-2 rounded-xl bg-white/40 border border-primary/40 hover:bg-white transition-all flex items-center cursor-pointer"
+                className="group h-12 gap-3 px-2 rounded-xl bg-secondary/80 border border-primary/30 hover:bg-primary hover:text-secondary focus:bg-primary focus:text-secondary transition-all flex items-center cursor-pointer"
               >
                 {/* Nombre a la izquierda */}
-                <span className="hidden lg:block text-xs font-semibold uppercase tracking-tight text-primary">
+                <span className="hidden lg:block text-xs font-semibold uppercase tracking-tight text-primary group-hover:text-secondary group-focus:text-secondary">
                   {user?.email.split("@")[0]}
                 </span>
 
                 {/* Avatar al centro */}
                 <Avatar className="size-9 border-2 border-primary/40 shadow-sm rounded-full overflow-hidden">
-                  <AvatarFallback className="bg-primary text-primary-foreground font-black text-[10px]">
+                  <AvatarFallback className="bg-secondary text-primary font-black text-[10px]">
                     {user?.email.substring(0, 2).toUpperCase()}
                   </AvatarFallback>
                 </Avatar>
 
-                <ChevronDown className="size-4 text-primary/30" />
+                <ChevronDown className="size-4 text-primary/40 group-hover:text-secondary group-focus:text-secondary" />
               </Button>
             </DropdownMenuTrigger>
 
             <DropdownMenuContent
               align="end"
-              className="w-60 rounded-[1.25rem] p-2 shadow-2xl border-primary/5 bg-white"
+              className="w-60 rounded-[1.25rem] p-2 shadow-2xl border-primary/10 pt-0 bg-secondary/95"
             >
               <DropdownMenuLabel className="px-4 py-3 text-[10px] text-primary uppercase tracking-widest">
                 Gestión de Cuenta
               </DropdownMenuLabel>
               <DropdownMenuSeparator className="bg-primary/10" />
-              <DropdownMenuItem className="rounded-lg py-2.5 cursor-pointer font-bold text-primary/80 focus:bg-primary focus:text-secondary">
+              <DropdownMenuItem className="rounded-lg py-2.5 cursor-pointer font-bold text-primary/80 hover:bg-primary hover:text-secondary focus:bg-primary focus:text-secondary">
                 <User className="mr-3 size-4 " /> Mi Perfil
               </DropdownMenuItem>
               <DropdownMenuSeparator className="bg-primary/10" />
               <DropdownMenuItem
                 onClick={handleLogout}
-                className="rounded-lg py-2.5 text-primary cursor-pointer font-bold focus:bg-primary focus:text-secondary"
+                className="rounded-lg py-2.5 text-primary cursor-pointer font-bold hover:bg-primary hover:text-secondary focus:bg-primary focus:text-secondary"
               >
                 <LogOut className="mr-3 size-4" /> Cerrar Sesión
               </DropdownMenuItem>

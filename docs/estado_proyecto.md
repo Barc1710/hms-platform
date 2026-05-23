@@ -29,9 +29,9 @@ Gestiona la separación lógica de datos de los hoteles clientes y la inyección
     *   [TenantGuard](file:///home/barc/projects/hms-platform/apps/api/src/common/guards/tenant.guard.ts): Guardia global que verifica que el `hotel_id` del usuario autenticado coincida con el hotel (tenant) de la petición activa.
 *   **Admin (Frontend)**:
     *   [tenant-provider.tsx](file:///home/barc/projects/hms-platform/apps/admin/src/components/providers/tenant-provider.tsx): Proveedor que inyecta las variables CSS de marca (color primario, secundario, fuentes y logo) provistos por el backend en la interfaz del staff.
+    *   **Resolución automática por Subdominio y Validación (Middleware/Proxy)**: Implementación de [proxy.ts](file:///home/barc/projects/hms-platform/apps/admin/src/proxy.ts) en el Admin Frontend para extraer dinámicamente el subdominio actual y compararlo con el `hotelId` o `slug` del token JWT (`hms_session`). Si no coinciden, redirige al usuario a `/login`. Admite un bypass de desarrollo mediante la variable `NEXT_PUBLIC_DEV_BYPASS_TENANT_MATCH`.
 
 ### Pendiente
-*   **Resolución automática por Subdominio/Dominio**: El frontend actualmente espera la inyección manual del tenant. Se requiere que el Portal Web público e interfaces resuelvan el tenant leyendo el subdominio (`hotel-paraiso.omnihotel.com`) o dominio personalizado (`reservas.hotelparaiso.com`) de la URL de navegación.
 *   **CRUD de Hoteles y Planes**: Falta un panel de administración "Super Admin" global de la plataforma para dar de alta nuevos hoteles (tenants) y modificar sus configuraciones visuales.
 
 ---
@@ -46,11 +46,11 @@ Controla el registro, autenticación, recuperación de contraseñas y permisos d
     *   Módulo `iam` con controladores y lógica de inicio de sesión (`login`) que devuelve un JWT firmado con el rol y `hotelId`.
     *   Flujos de recuperación de contraseñas (`forgot-password` con simulación por consola de link único y `reset-password` para aplicar la nueva contraseña).
     *   [SqlUsuarioRepository](file:///home/barc/projects/hms-platform/apps/api/src/modules/iam/infrastructure/persistence/sql-usuario.repository.ts) adaptado para persistir de forma segura en Postgres con passwords hasheados en `bcrypt`.
+    *   **Autenticación y Protección de Rutas**: Implementación completa de `JwtAuthGuard` y la estrategia Passport `JwtStrategy` para validar tokens, corroborando a través de base de datos que el usuario exista y esté activo en su respectivo tenant (`hotel_id`), poblando el objeto `request.user`. Adicionalmente, se creó el decorador `@CurrentUser()`. Se corrigió el problema de ciclo de vida del constructor de la estrategia leyendo de forma segura las variables de entorno (`process.env.JWT_SECRET`) directamente en `super()`.
 *   **Admin (Frontend)**:
     *   Páginas de [Login](file:///home/barc/projects/hms-platform/apps/admin/src/app/login/page.tsx), [Forgot Password](file:///home/barc/projects/hms-platform/apps/admin/src/app/forgot-password/page.tsx) y [Reset Password](file:///home/barc/projects/hms-platform/apps/admin/src/app/reset-password/page.tsx) completadas y enlazadas para consumir el backend central.
 
 ### Pendiente
-*   **Autenticación de Rutas (AuthGuard)**: Aunque hay lógica de JWT y se cuenta con el `TenantGuard`, falta el `JwtAuthGuard` a nivel NestJS para validar de manera general las peticiones y poblar el objeto `request.user` en endpoints protegidos.
 *   **Gestión de Staff**: El Panel de Admin tiene un enlace en el menú lateral ("Gestión de Staff"), pero no se han creado las páginas ni los endpoints CRUD para crear, listar, modificar o desactivar cuentas de trabajadores del hotel.
 *   **Roles y Permisos Granulares (RBAC)**: Validar a nivel API y Frontend si un usuario posee el rol adecuado para ejecutar ciertas acciones (ej. solo `ADMIN_HOTEL` abre cajas o altera tarifas; `HOUSEKEEPING` solo cambia estados de limpieza).
 
@@ -62,12 +62,10 @@ Administración física del hotel: categorías de habitaciones, tarifas base y e
 
 ### Desarrollado
 *   **Base de Datos**: Tablas `categorias_habitacion` y `habitaciones` definidas con estados de limpieza y ocupación.
+*   **API (Backend)**: Módulo `rooms` completamente desarrollado bajo Arquitectura Hexagonal. Incluye los casos de uso y endpoints expuestos en [RoomsController](file:///home/barc/projects/hms-platform/apps/api/src/modules/rooms/infrastructure/http/rooms.controller.ts) para listar habitaciones por hotel y actualizar su estado. La persistencia se realiza mediante consultas SQL puras con `postgres.js` en [SqlRoomRepository](file:///home/barc/projects/hms-platform/apps/api/src/modules/rooms/infrastructure/persistence/sql-room.repository.ts), protegida mediante `JwtAuthGuard` y `TenantGuard` para aislamiento multi-tenant.
 
 ### Pendiente
-*   **API (Backend)**: Cero desarrollado. Se necesita implementar el módulo completo:
-    *   CRUD de Categorías de Habitación (Suite, Standard, etc.) y definición de tarifas base.
-    *   CRUD de Habitaciones físicas (número de habitación, piso, categoría).
-    *   Endpoints para actualización de estado de habitación (ej. cambiar de `SUCIA` a `DISPONIBLE` por parte de limpieza).
+*   **API (Backend)**: Endpoints administrativos CRUD de creación y edición para categorías de habitaciones y registro inicial de habitaciones físicas.
 *   **Admin (Frontend)**: Cero desarrollado.
     *   Falta la sección `/dashboard/habitaciones` para que la recepción monitoree y cambie el estado de las habitaciones.
     *   Falta una vista simplificada móvil para que el staff de limpieza (Housekeeping) marque las habitaciones limpias o reporte incidencias.
